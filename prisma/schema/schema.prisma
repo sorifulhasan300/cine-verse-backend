@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  SUPER_ADMIN
+}
+
+enum ContentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// --- Models ---
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      UserRole  @default(USER)
+  reviews   Review[]
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Movie {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  releaseDate DateTime
+  posterUrl   String
+  duration    Int
+  reviews     Review[]
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  movies Movie[]
+}
+
+model Review {
+  id        String        @id @default(uuid())
+  rating    Int
+  reviewText String
+  status    ContentStatus @default(PENDING)
+  movieId   String
+  movie     Movie         @relation(fields: [movieId], references: [id])
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // Self-relation for replies
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+}
