@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
 import { auth } from "./app/lib/auth";
 import { toNodeHandler } from "better-auth/node";
+import { routers } from "./routers";
 
 const app: Application = express();
 
@@ -22,5 +23,5 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
-
+app.use("/api/v1", routers);
 export default app;
