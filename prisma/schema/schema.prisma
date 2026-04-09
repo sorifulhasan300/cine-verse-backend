@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../../src/generated/prisma"
 }
 
 datasource db {
@@ -18,15 +18,20 @@ model User {
   email         String
   emailVerified Boolean   @default(false)
   image         String?
+
+  role   String? @default("USER")
+  status String? @default("ACTIVE")
+  phone  String?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-reviews       Review[]
-comments      Comment[]
-likes         Like[]
-watchLists    WatchList[]
-subscriptions Subscription[]
+  reviews       Review[]
+  comments      Comment[]
+  likes         Like[]
+  watchLists    WatchList[]
+  subscriptions Subscription[]
   @@unique([email])
   @@map("user")
 }
