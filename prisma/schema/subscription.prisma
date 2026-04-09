@@ -1,0 +1,23 @@
+enum SubscriptionStatus {
+  FREE
+  PREMIUM
+}
+
+model Subscription {
+  id            String             @id @default(uuid())
+  amount        Int
+  transactionId String             @unique
+  status        SubscriptionStatus @default(FREE)
+  planType      String             // e.g., Monthly, Yearly
+  startDate     DateTime           @default(now())
+  endDate       DateTime
+  
+  // Relations
+  userId        String
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@map("subscriptions")
+}

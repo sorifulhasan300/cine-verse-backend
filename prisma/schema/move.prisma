@@ -1,0 +1,40 @@
+enum Pricing {
+  FREE
+  PREMIUM
+}
+
+model Movie {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  releaseYear  DateTime
+  director     String
+  cast         String
+  videoUrl     String
+  thumbnailUrl String
+  pricing      Pricing   @default(FREE)
+  
+  // Relations
+  categoryId   String
+  category     Category  @relation(fields: [categoryId], references: [id])
+  
+  reviews      Review[]
+  likes        Like[]
+  watchLists   WatchList[]
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("movies")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  movies    Movie[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}

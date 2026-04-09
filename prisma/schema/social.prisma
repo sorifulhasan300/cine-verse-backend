@@ -1,0 +1,84 @@
+enum ReviewStatus {
+  PENDING
+  PUBLISHED
+}
+
+enum CommentStatus {
+  PENDING
+  PUBLISHED
+}
+
+model Review {
+  id        String       @id @default(uuid())
+  text      String
+  status    ReviewStatus @default(PENDING)
+  isDeleted Boolean      @default(false)
+  
+  // Relations
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId   String
+  movie     Movie        @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  
+  comments  Comment[]
+  
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("reviews")
+}
+
+model Comment {
+  id        String        @id @default(uuid())
+  text      String
+  status    CommentStatus @default(PENDING)
+  isDeleted Boolean       @default(false)
+  
+  // Relations
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId  String
+  review    Review        @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  
+  // Self relation for replies (Parent/Child)
+  parentId  String?
+  parent    Comment?      @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[]     @relation("CommentReplies")
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, movieId]) 
+  @@map("likes")
+}
+
+model WatchList {
+  id        String   @id @default(uuid())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, movieId])
+  @@map("watch_lists")
+}
