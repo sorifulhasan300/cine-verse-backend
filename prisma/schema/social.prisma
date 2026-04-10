@@ -10,18 +10,20 @@ enum CommentStatus {
 
 model Review {
   id        String       @id @default(uuid())
-  text      String
+  text      String       
+  rating    Int        
   status    ReviewStatus @default(PENDING)
   isDeleted Boolean      @default(false)
-  
+
   // Relations
   userId    String
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   movieId   String
   movie     Movie        @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  
+
   comments  Comment[]
   
+  @@unique([userId, movieId])
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
