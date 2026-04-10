@@ -19,7 +19,7 @@
     "build": "tsc",
     "start": "node dist/server.ts",
     "db:init": "prisma migrate dev --name init",
-    "db:migrate": "npx prisma migrate dev",
+    "db:migrate": "dlx prisma migrate dev --name init",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio"
   },
