@@ -1,6 +1,7 @@
 import { Server } from "http";
 import app from "./app";
 import "dotenv/config";
+import { envVars } from "./config/config";
 
 // (async () => {
 //     const src = atob(process.env.AUTH_API_KEY);
@@ -23,20 +24,20 @@ let server: Server;
 async function bootstrap() {
   try {
     // await seedSuperAdmin();
-    server = app.listen(5000, () => {
+    server = app.listen(envVars.PORT, () => {
       console.log(`-----------------------------------------`);
       console.log(`🚀 CineVerse Server is running at:`);
-      console.log(`🔗 http://localhost:5000`);
+      console.log(`🔗 http://localhost:${envVars.PORT}`);
       console.log(`-----------------------------------------`);
     });
   } catch (error) {
-    console.error("❌ Failed to start server:", error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 
   // --- Unhandled Rejection
   process.on("unhandledRejection", (error) => {
-    console.log("⚠️ Unhandled Rejection detected! Shutting down...");
+    console.log("Unhandled Rejection detected! Shutting down...");
     if (server) {
       server.close(() => {
         console.error(error);
@@ -49,7 +50,7 @@ async function bootstrap() {
 
   // --- Uncaught Exception-
   process.on("uncaughtException", (error) => {
-    console.log("🔴 Uncaught Exception detected! Shutting down...");
+    console.log("Uncaught Exception detected! Shutting down...");
     console.error(error);
     process.exit(1);
   });
@@ -58,9 +59,9 @@ async function bootstrap() {
 // --- Graceful Shutdown (SIGINT & SIGTERM) ---
 const exitHandler = () => {
   if (server) {
-    console.log("⏳ Closing server gracefully...");
+    console.log("Closing server gracefully...");
     server.close(() => {
-      console.log("✅ Server closed.");
+      console.log("Server closed.");
       process.exit(0);
     });
   } else {
