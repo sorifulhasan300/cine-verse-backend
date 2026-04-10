@@ -5,7 +5,7 @@ import { auth } from "./app/lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { routers } from "./routers";
 import notFound from "./middleware/notFound";
-import globalErrorHandler from "./middleware/globalErrorHandler";
+import globalErrorHandler from "./errors/globalErrorHandler";
 import { StatusCodes } from "http-status-codes";
 
 const app: Application = express();

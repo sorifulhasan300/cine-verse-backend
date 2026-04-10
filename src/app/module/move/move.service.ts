@@ -5,7 +5,7 @@ const createMovie = async (payload: Movie): Promise<Movie> => {
   const result = await prisma.movie.create({
     data: payload,
     include: {
-      category: true, // মুভি তৈরির পর ক্যাটাগরি তথ্যসহ রিটার্ন করবে
+      category: true, 
     },
   });
   return result;

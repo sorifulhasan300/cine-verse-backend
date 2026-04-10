@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "ignoreDeprecations": "5.0"
   },
-  "include": ["src", "prisma.config.ts"],
+  "include": ["src", "prisma.config.ts", "src/errors"],
   "exclude": ["node_modules"]
 }
