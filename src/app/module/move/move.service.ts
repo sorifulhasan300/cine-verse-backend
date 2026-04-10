@@ -1,3 +1,4 @@
+import QueryBuilder from "../../../builder/QueryBuilder";
 import { Movie, Pricing } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
@@ -18,22 +19,15 @@ const createMovie = async (payload: any) => {
   return result;
 };
 
-const getAllMovies = async (filters: any) => {
-  const { searchTerm, categoryId, pricing } = filters;
+const getAllMovies = async (query: Record<string, any>) => {
+  const movieQuery = new QueryBuilder(prisma.movie, query)
+    .search(["title", "director", "cast"])
+    .filter()
+    .sort()
+    .paginate();
 
-  return await prisma.movie.findMany({
-    where: {
-      AND: [
-        searchTerm
-          ? { title: { contains: searchTerm, mode: "insensitive" } }
-          : {},
-        categoryId ? { categoryId } : {},
-        pricing ? { pricing: pricing as Pricing } : {},
-      ],
-    },
-    include: { categories: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const result = await movieQuery.execute();
+  return result;
 };
 
 const getSingleMovie = async (id: string) => {
