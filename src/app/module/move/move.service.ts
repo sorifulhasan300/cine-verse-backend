@@ -1,11 +1,18 @@
 import { Movie, Pricing } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
-const createMovie = async (payload: Movie): Promise<Movie> => {
+const createMovie = async (payload: any) => {
+  const { categoryIds, ...movieData } = payload;
+
   const result = await prisma.movie.create({
-    data: payload,
+    data: {
+      ...movieData,
+      categories: {
+        connect: categoryIds.map((id: string) => ({ id })),
+      },
+    },
     include: {
-      category: true, 
+      categories: true,
     },
   });
   return result;
@@ -24,7 +31,7 @@ const getAllMovies = async (filters: any) => {
         pricing ? { pricing: pricing as Pricing } : {},
       ],
     },
-    include: { category: true },
+    include: { categories: true },
     orderBy: { createdAt: "desc" },
   });
 };

@@ -4,7 +4,7 @@ enum Pricing {
 }
 
 model Movie {
-  id           String    @id @default(uuid())
+  id           String      @id @default(uuid())
   title        String
   description  String
   releaseYear  DateTime
@@ -12,18 +12,16 @@ model Movie {
   cast         String
   videoUrl     String
   thumbnailUrl String
-  pricing      Pricing   @default(FREE)
-  
-  // Relations
-  categoryId   String
-  category     Category  @relation(fields: [categoryId], references: [id])
-  
+  pricing      Pricing     @default(FREE)
+
+  categories   Category[]  @relation("MovieToCategory")
+
   reviews      Review[]
   likes        Like[]
   watchLists   WatchList[]
-  
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@map("movies")
 }
@@ -31,8 +29,9 @@ model Movie {
 model Category {
   id        String   @id @default(uuid())
   name      String   @unique
-  movies    Movie[]
   
+  movies    Movie[]  @relation("MovieToCategory")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

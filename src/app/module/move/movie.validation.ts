@@ -19,7 +19,7 @@ export const movieValidationSchema = z.object({
     ["FREE", "PREMIUM"],
     "Pricing must be either 'FREE' or 'PREMIUM'",
   ),
-  categoryId: z.string("Category ID is required"),
+  categoryIds: z.array(z.string(), "At least one category is required").min(1),
 });
 
 export default movieValidationSchema;
