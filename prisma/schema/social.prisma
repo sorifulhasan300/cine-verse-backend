@@ -56,14 +56,13 @@ model Comment {
 model Like {
   id        String   @id @default(uuid())
   
-  // Relations
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   movieId   String
   movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@unique([userId, movieId]) 
   @@map("likes")
