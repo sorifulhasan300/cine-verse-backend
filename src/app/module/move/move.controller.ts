@@ -26,7 +26,11 @@ const getAllMovies = catchAsync(async (req, res) => {
 });
 
 const getSingleMovie = catchAsync(async (req, res) => {
-  const result = await MovieService.getSingleMovie(req.params.id as string);
+  const userId = req.user?.id;
+  const result = await MovieService.getSingleMovie(
+    req.params.id as string,
+    userId as string,
+  );
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

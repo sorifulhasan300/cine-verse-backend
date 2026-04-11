@@ -4,14 +4,16 @@ import { CategoryRoutes } from "../app/module/category/category.route";
 import { ReviewRoutes } from "../app/module/review/review.route";
 import { CommentRoutes } from "../app/module/comment/comment.route";
 import { LikeRoutes } from "../app/module/like/like.route";
+import { WatchlistRoutes } from "../app/module/watchlist/watchlist.route";
 
 const router = Router();
 
-// Define your routes here
+// Defining routes here
 router.use("/movie", MovieRoutes);
 router.use("/categories", CategoryRoutes);
 router.use("/review", ReviewRoutes);
 router.use("/comments", CommentRoutes);
 router.use("/likes", LikeRoutes);
+router.use("/watchlist", WatchlistRoutes);
 
 export const routers = router;

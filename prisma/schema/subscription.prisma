@@ -1,23 +1,33 @@
-enum SubscriptionStatus {
+enum SubscriptionPlan {
   FREE
-  PREMIUM
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
 }
 
 model Subscription {
-  id            String             @id @default(uuid())
-  amount        Int
-  transactionId String             @unique
-  status        SubscriptionStatus @default(FREE)
-  planType      String             // e.g., Monthly, Yearly
-  startDate     DateTime           @default(now())
-  endDate       DateTime
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Relations
-  userId        String
-  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId     String             @unique 
+  stripeSubscriptionId String?            @unique 
+  stripePriceId        String?           
+  
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(INCOMPLETE)
+  
+  currentPeriodEnd     DateTime?         
+  cancelAtPeriodEnd    Boolean            @default(false)
 
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
   @@map("subscriptions")
 }
