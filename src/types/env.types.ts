@@ -5,4 +5,9 @@ export interface EnvConfig {
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL: string;
   AUTH_API_KEY: string;
+  MONTHLY_PLAN_PRICE_ID: string;
+  YEARLY_PLAN_PRICE_ID: string;
+  STRIPE_SECRET_KEY: string;
+  STRIPE_WEBHOOK_SECRET: string;
+  CLIENT_URL: string;
 }

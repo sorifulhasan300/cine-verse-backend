@@ -7,6 +7,7 @@ import { routers } from "./routers";
 import notFound from "./middleware/notFound";
 import globalErrorHandler from "./errors/globalErrorHandler";
 import { StatusCodes } from "http-status-codes";
+import { SubscriptionController } from "./app/module/subscription/subscription.controller";
 
 const app: Application = express();
 
@@ -26,6 +27,16 @@ app.get("/", (req: Request, res: Response) => {
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/v1", routers);
+
+app.post(
+  "/api/v1/subscriptions/webhook",
+  express.raw({ type: "application/json" }), 
+  SubscriptionController.stripeWebhook,
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 app.use(notFound);
 app.use(globalErrorHandler);

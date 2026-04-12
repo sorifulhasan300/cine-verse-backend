@@ -13,6 +13,11 @@ const loadEnvVariables = (): EnvConfig => {
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "AUTH_API_KEY",
+    "MONTHLY_PLAN_PRICE_ID",
+    "YEARLY_PLAN_PRICE_ID",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
+    "CLIENT_URL",
   ];
 
   requiredEnvVars.forEach((varName) => {
@@ -31,6 +36,11 @@ const loadEnvVariables = (): EnvConfig => {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL as string,
     AUTH_API_KEY: process.env.AUTH_API_KEY as string,
+    MONTHLY_PLAN_PRICE_ID: process.env.MONTHLY_PLAN_PRICE_ID as string,
+    YEARLY_PLAN_PRICE_ID: process.env.YEARLY_PLAN_PRICE_ID as string,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+    CLIENT_URL: process.env.CLIENT_URL as string,
   };
 };
 
