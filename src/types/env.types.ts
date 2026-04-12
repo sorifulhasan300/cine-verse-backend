@@ -10,4 +10,6 @@ export interface EnvConfig {
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   CLIENT_URL: string;
+  EMAIL_USER: string;
+  EMAIL_PASS: string;
 }

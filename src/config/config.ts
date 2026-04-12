@@ -18,6 +18,8 @@ const loadEnvVariables = (): EnvConfig => {
     "STRIPE_SECRET_KEY",
     "STRIPE_WEBHOOK_SECRET",
     "CLIENT_URL",
+    "EMAIL_USER",
+    "EMAIL_PASS",
   ];
 
   requiredEnvVars.forEach((varName) => {
@@ -41,6 +43,8 @@ const loadEnvVariables = (): EnvConfig => {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
     CLIENT_URL: process.env.CLIENT_URL as string,
+    EMAIL_USER: process.env.EMAIL_USER as string,
+    EMAIL_PASS: process.env.EMAIL_PASS as string,
   };
 };
 
