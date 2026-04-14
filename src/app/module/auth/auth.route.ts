@@ -1,6 +1,7 @@
 import express from "express";
 import { AuthController } from "./auth.controller";
 import validateRequest from "../../../middleware/validateRequest";
+import { auth } from "../../lib/auth";
 import {
   signUpValidationSchema,
   verifyOtpValidationSchema,
@@ -9,6 +10,8 @@ import {
 } from "./auth.validation";
 
 const router = express.Router();
+
+router.post("/signup", auth.api.signUpEmail);
 
 router.post(
   "/verify-email",
@@ -19,7 +22,7 @@ router.post(
 router.post(
   "/forgot-password",
   validateRequest(forgotPasswordValidationSchema),
-  AuthController.forgotPassword,
+  AuthController.forgetPasswordRequest,
 );
 
 router.post(

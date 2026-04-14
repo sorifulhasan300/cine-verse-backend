@@ -19,34 +19,17 @@ const verifyEmail = async (email: string, otp: string) => {
 };
 
 const forgotPassword = async (email: string) => {
-  await auth.api.forgetPassword({
-    body: {
-      email,
-    },
+  await auth.api.requestPasswordResetEmailOTP({
+    body: { email },
   });
+  return { message: "OTP sent to your email for password reset" };
 };
 
-const resetPassword = async (email: string, otp: string, newPassword: string) => {
-  // First verify the OTP for password reset
-  const verifyResult = await auth.api.verifyEmailOTP({
-    body: {
-      email,
-      otp,
-      type: "forget-password", // Assuming it accepts type
-    },
+const resetPassword = async (email: string, otp: string, password: string) => {
+  await auth.api.resetPasswordEmailOTP({
+    body: { email, otp, password },
   });
-
-  if (verifyResult.status) {
-    // Now reset the password
-    await auth.api.resetPassword({
-      body: {
-        email,
-        newPassword,
-      },
-    });
-  } else {
-    throw new Error("Invalid OTP");
-  }
+  return { message: "Password reset successfully" };
 };
 
 export const authService = {

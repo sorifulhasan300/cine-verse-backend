@@ -11,23 +11,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, url }) => {
-      const html = `Click here to reset your password: ${url}`;
-      await sendEmail(user.email, html, "Reset Password");
-    },
   },
-  // emailVerification: {
-  //   sendOnSignUp: true,
-  //   autoSignInAfterVerification: true,
-  //   sendVerificationEmail: async ({ user, url }) => {
-  //     const html = `
-  //               <h1>Verify your email</h1>
-  //               <p>Hi ${user.name}, please verify your email by clicking the link below:</p>
-  //               <a href="${url}">Verify Email</a>
-  //           `;
-  //     await sendEmail(user.email, html, "Verify your CineVerse account");
-  //   },
-  // },
+
   plugins: [
     emailOTP({
       overrideDefaultEmailVerification: true,
@@ -43,8 +28,15 @@ export const auth = betterAuth({
             `;
           await sendEmail(email, html, "Your Verification Code");
         } else if (type === "forget-password") {
-          const html = `Your password reset code is: ${otp}`;
-          await sendEmail(email, html, "Reset Password");
+          const html = `
+                <div style="font-family: sans-serif; padding: 20px;">
+                    <h2>Password Reset Request</h2>
+                    <p>Hi, use the code below to reset your password:</p>
+                    <h1 style="color: #ef4444; letter-spacing: 5px;">${otp}</h1>
+                    <p>This code will expire in 10 minutes. If you didn't request this, please ignore this email.</p>
+                </div>
+            `;
+          await sendEmail(email, html, "Reset Your Password - CineVerse");
         }
       },
     }),
