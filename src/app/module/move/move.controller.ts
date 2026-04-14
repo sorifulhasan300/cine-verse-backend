@@ -3,6 +3,7 @@ import { MovieService } from "./move.service";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { StatusCodes } from "http-status-codes";
+import { prisma } from "../../lib/prisma";
 
 const createMovie = catchAsync(async (req, res) => {
   const result = await MovieService.createMovie(req.body);
@@ -27,6 +28,30 @@ const getAllMovies = catchAsync(async (req, res) => {
 
 const getSingleMovie = catchAsync(async (req, res) => {
   const userId = req.user?.id;
+
+  if (!userId) {
+    return sendResponse(res, {
+      statusCode: StatusCodes.UNAUTHORIZED,
+      success: false,
+      message: "You are not a premium user",
+      data: null,
+    });
+  }
+
+  // Check if user has active subscription
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId },
+  });
+
+  if (!subscription || (subscription.status as string) !== "ACTIVE" || subscription.plan === "FREE") {
+    return sendResponse(res, {
+      statusCode: StatusCodes.FORBIDDEN,
+      success: false,
+      message: "You are not a premium user",
+      data: null,
+    });
+  }
+
   const result = await MovieService.getSingleMovie(
     req.params.id as string,
     userId as string,

@@ -14,6 +14,15 @@ const app: Application = express();
 //parser and common middlewares
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
+
+// webhook not working properly need to fix and generate
+// new webhook secret and update in env vars and stripe dashboard and test with stripe cli
+app.post(
+  "/api/v1/subscriptions/webhook",
+  express.raw({ type: "application/json" }),
+  SubscriptionController.stripeWebhook,
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,17 +36,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/v1", routers);
-
-// webhook not working properly need to fix and generate 
-// new webhook secret and update in env vars and stripe dashboard and test with stripe cli
-app.post(
-  "/api/v1/subscriptions/webhook",
-  express.raw({ type: "application/json" }),
-  SubscriptionController.stripeWebhook,
-);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(notFound);
 app.use(globalErrorHandler);

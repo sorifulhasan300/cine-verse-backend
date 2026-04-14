@@ -31,6 +31,7 @@ const getAllMovies = async (query: Record<string, any>) => {
 };
 
 const getSingleMovie = async (id: string, userId?: string) => {
+
   return await prisma.movie.findUnique({
     where: {
       id: id,

@@ -7,6 +7,7 @@ import { LikeRoutes } from "../app/module/like/like.route";
 import { WatchlistRoutes } from "../app/module/watchlist/watchlist.route";
 import { SubscriptionRoutes } from "../app/module/subscription/subscription.route";
 import { AuthRoutes } from "../app/module/auth/auth.route";
+import { StaticsRoutes } from "../app/module/statics/statics.route";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use("/likes", LikeRoutes);
 router.use("/watchlist", WatchlistRoutes);
 router.use("/subscriptions", SubscriptionRoutes);
 router.use("/auth", AuthRoutes);
+router.use("/statics", StaticsRoutes);
 
 export const routers = router;

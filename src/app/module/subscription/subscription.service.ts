@@ -44,35 +44,83 @@ const createCheckoutSession = async (
 };
 
 const handleWebhook = async (event: any) => {
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as any;
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const session = event.data.object as any;
 
-    const userId = session.metadata?.userId;
-    const plan = session.metadata?.plan as "MONTHLY" | "YEARLY";
-    const stripeSubscriptionId = session.subscription as string;
-    const stripeCustomerId = session.customer as string;
+      const userId = session.metadata?.userId;
+      const plan = session.metadata?.plan as "MONTHLY" | "YEARLY";
+      const stripeSubscriptionId = session.subscription as string;
+      const stripeCustomerId = session.customer as string;
 
-    const subscription =
-      await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      const subscription =
+        await stripe.subscriptions.retrieve(stripeSubscriptionId);
 
-    await prisma.subscription.upsert({
-      where: { userId: userId },
-      update: {
-        stripeSubscriptionId,
-        stripeCustomerId,
-        plan,
-        status: "ACTIVE",
-        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-      },
-      create: {
-        userId: userId!,
-        stripeSubscriptionId,
-        stripeCustomerId,
-        plan,
-        status: "ACTIVE",
-        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
-      },
-    });
+      await prisma.subscription.upsert({
+        where: { userId: userId },
+        update: {
+          stripeSubscriptionId,
+          stripeCustomerId,
+          plan,
+          status: "ACTIVE",
+          currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+        },
+        create: {
+          userId: userId!,
+          stripeSubscriptionId,
+          stripeCustomerId,
+          plan,
+          status: "ACTIVE",
+          currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+        },
+      });
+      break;
+    }
+    case "customer.subscription.created": {
+      const subscription = event.data.object as any;
+      const userId = subscription.metadata?.userId;
+      const plan = subscription.metadata?.plan as "MONTHLY" | "YEARLY";
+
+      if (userId && plan) {
+        await prisma.subscription.upsert({
+          where: { userId },
+          update: {
+            stripeSubscriptionId: subscription.id,
+            stripeCustomerId: subscription.customer,
+            plan,
+            status: "ACTIVE",
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          },
+          create: {
+            userId,
+            stripeSubscriptionId: subscription.id,
+            stripeCustomerId: subscription.customer,
+            plan,
+            status: "ACTIVE",
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          },
+        });
+      }
+      break;
+    }
+    case "invoice.payment_succeeded": {
+      const invoice = event.data.object as any;
+      const subscriptionId = invoice.subscription as string;
+
+      if (subscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        await prisma.subscription.updateMany({
+          where: { stripeSubscriptionId: subscriptionId },
+          data: {
+            status: "ACTIVE",
+            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+          },
+        });
+      }
+      break;
+    }
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
   }
 };
 
