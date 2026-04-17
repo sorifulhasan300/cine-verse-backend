@@ -40,7 +40,7 @@ const getSingleMovie = catchAsync(async (req, res) => {
 
   // Check if user has active subscription
   const subscription = await prisma.subscription.findUnique({
-    where: { userId },
+    where: { userId: userId as string },
   });
 
   if (!subscription || (subscription.status as string) !== "ACTIVE" || subscription.plan === "FREE") {

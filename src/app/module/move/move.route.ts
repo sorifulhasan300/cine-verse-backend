@@ -4,6 +4,7 @@ import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
 import validateRequest from "../../../middleware/validateRequest";
 import movieValidationSchema from "./movie.validation";
+import { checkPremium } from "../../../middleware/checkPremium";
 
 const router = express.Router();
 
@@ -16,6 +17,11 @@ router.post(
 
 router.get("/", MovieController.getAllMovies);
 
-router.get("/:id", MovieController.getSingleMovie);
+router.get(
+  "/:id",
+  checkAuth(UserRole.ADMIN),
+  checkPremium,
+  MovieController.getSingleMovie,
+);
 
 export const MovieRoutes = router;

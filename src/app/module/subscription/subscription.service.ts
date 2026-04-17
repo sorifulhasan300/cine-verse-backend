@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { prisma } from "../../lib/prisma";
 import { envVars } from "../../../config/config";
-import { env } from "node:process";
 
 const stripe = new Stripe(envVars.STRIPE_SECRET_KEY, {
   apiVersion: "2023-10-16" as any,
@@ -63,7 +62,9 @@ const handleWebhook = async (event: any) => {
           stripeCustomerId,
           plan,
           status: "ACTIVE",
-          currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+          currentPeriodEnd: new Date(
+            (subscription as any).current_period_end * 1000,
+          ),
         },
         create: {
           userId: userId!,
@@ -71,7 +72,9 @@ const handleWebhook = async (event: any) => {
           stripeCustomerId,
           plan,
           status: "ACTIVE",
-          currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+          currentPeriodEnd: new Date(
+            (subscription as any).current_period_end * 1000,
+          ),
         },
       });
       break;
@@ -108,12 +111,15 @@ const handleWebhook = async (event: any) => {
       const subscriptionId = invoice.subscription as string;
 
       if (subscriptionId) {
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const subscription =
+          await stripe.subscriptions.retrieve(subscriptionId);
         await prisma.subscription.updateMany({
           where: { stripeSubscriptionId: subscriptionId },
           data: {
             status: "ACTIVE",
-            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+            currentPeriodEnd: new Date(
+              (subscription as any).current_period_end * 1000,
+            ),
           },
         });
       }
