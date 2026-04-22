@@ -14,8 +14,8 @@ datasource db {
 
 model User {
   id            String    @id
-  name          String
-  email         String
+  name          String 
+  email         String  @unique
   emailVerified Boolean   @default(false)
   image         String?
 
@@ -32,7 +32,7 @@ model User {
   likes         Like[]
   watchLists    WatchList[]
   subscriptions Subscription[]
-  @@unique([email])
+  
   @@map("user")
 }
 

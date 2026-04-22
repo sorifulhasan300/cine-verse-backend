@@ -11,8 +11,6 @@ import {
 
 const router = express.Router();
 
-router.post("/signup", auth.api.signUpEmail);
-
 router.post(
   "/verify-email",
   validateRequest(verifyOtpValidationSchema),
