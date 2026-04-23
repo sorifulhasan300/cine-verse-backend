@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import AppError from "../../utils/AppError";
 
 const toggleWatchlist = async (userId: string, movieId: string) => {
   const isExist = await prisma.watchList.findUnique({
@@ -35,7 +36,25 @@ const getMyWatchlist = async (userId: string) => {
   return result;
 };
 
+const removeWatchlist = async (userId: string, movieId: string) => {
+  const isExist = await prisma.watchList.findUnique({
+    where: {
+      userId_movieId: { userId, movieId },
+    },
+  });
+
+  if (!isExist) {
+    throw new AppError(404, "Movie not found in watchlist");
+  }
+
+  await prisma.watchList.delete({
+    where: { id: isExist.id },
+  });
+  return { message: "Removed from watchlist" };
+};
+
 export const WatchlistService = {
   toggleWatchlist,
   getMyWatchlist,
+  removeWatchlist,
 };

@@ -17,4 +17,10 @@ router.get(
   WatchlistController.getMyWatchlist,
 );
 
+router.post(
+  "/remove",
+  checkAuth(UserRole.USER),
+  WatchlistController.removeWatchlist,
+);
+
 export const WatchlistRoutes = router;

@@ -33,7 +33,25 @@ const getMyWatchlist = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const removeWatchlist = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  const { movieId } = req.body;
+
+  const result = await WatchlistService.removeWatchlist(
+    userId as string,
+    movieId,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: result.message,
+    data: null,
+  });
+});
+
 export const WatchlistController = {
   toggleWatchlist,
   getMyWatchlist,
+  removeWatchlist,
 };
