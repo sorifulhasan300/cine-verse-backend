@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { emailOTP } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { sendEmail } from "../utils/emailSender";
+import { UserRole } from "../../types/role.types";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
