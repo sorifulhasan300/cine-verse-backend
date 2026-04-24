@@ -8,6 +8,7 @@ import { WatchlistRoutes } from "../app/module/watchlist/watchlist.route";
 import { SubscriptionRoutes } from "../app/module/subscription/subscription.route";
 import { AuthRoutes } from "../app/module/auth/auth.route";
 import { StaticsRoutes } from "../app/module/statics/statics.route";
+import { ManageUserRoutes } from "../app/module/manage-users/manage-user.route";
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use("/watchlist", WatchlistRoutes);
 router.use("/subscriptions", SubscriptionRoutes);
 router.use("/auth", AuthRoutes);
 router.use("/statics", StaticsRoutes);
+router.use("/manage-users", ManageUserRoutes);
 
 export const routers = router;

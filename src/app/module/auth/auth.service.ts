@@ -32,8 +32,24 @@ const resetPassword = async (email: string, otp: string, password: string) => {
   return { message: "Password reset successfully" };
 };
 
+const getProfile = async (userId: string) => {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      phone: true,
+      status: true,
+      emailVerified: true,
+    },
+  });
+};
+
 export const authService = {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  getProfile,
 };

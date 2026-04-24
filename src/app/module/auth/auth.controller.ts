@@ -40,8 +40,21 @@ export const resetPassword = catchAsync(async (req, res) => {
   });
 });
 
+const getProfile = catchAsync(async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  const profile = await authService.getProfile(user.id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Profile retrieved successfully",
+    data: profile,
+  });
+});
+
 export const AuthController = {
   verifyEmail,
   forgetPasswordRequest,
   resetPassword,
+  getProfile,
 };
