@@ -1,7 +1,8 @@
+import { envVars } from "../../../config/config";
+import AppError from "../../utils/AppError";
 import Stripe from "stripe";
 import { prisma } from "../../lib/prisma";
-import { envVars } from "../../../config/config";
-
+import sendResponse from "../../utils/sendResponse";
 const stripe = new Stripe(envVars.STRIPE_SECRET_KEY, {
   apiVersion: "2023-10-16" as any,
 });
@@ -13,8 +14,17 @@ const createCheckoutSession = async (
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
+  const activeSub = await prisma.subscription.findFirst({
+    where: {
+      userId,
+      status: "ACTIVE",
+    },
+  });
+  if (activeSub) {
+    throw new AppError(400, "You already have an active subscription!");
+  }
 
-  if (!user) throw new Error("User not found!");
+  if (!user) throw new AppError(404, "User not found!");
 
   const priceId =
     plan === "MONTHLY"
@@ -31,6 +41,12 @@ const createCheckoutSession = async (
         quantity: 1,
       },
     ],
+    subscription_data: {
+      metadata: {
+        userId: userId,
+        plan: plan,
+      },
+    },
     success_url: `${envVars.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${envVars.CLIENT_URL}/payment/cancel`,
     metadata: {
@@ -44,93 +60,171 @@ const createCheckoutSession = async (
 
 const handleWebhook = async (event: any) => {
   switch (event.type) {
-    case "checkout.session.completed": {
+    case "checkout.session.completed":
+    case "customer.subscription.created": {
       const session = event.data.object as any;
-
       const userId = session.metadata?.userId;
       const plan = session.metadata?.plan as "MONTHLY" | "YEARLY";
-      const stripeSubscriptionId = session.subscription as string;
+      console.log("meta data and userid and plan", userId, plan);
+      const stripeSubscriptionId = session.subscription || session.id;
       const stripeCustomerId = session.customer as string;
 
-      const subscription =
-        await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      if (!userId || !plan) {
+        console.error("Missing userId or plan in metadata");
+        return;
+      }
+      console.log("successfully pass from userId and plan");
+      const subscription = (await stripe.subscriptions.retrieve(
+        stripeSubscriptionId,
+      )) as any;
+      const periodEnd = new Date(subscription.current_period_end * 1000);
+      console.log("successfully pass from subscription");
 
-      await prisma.subscription.upsert({
+      const res = await prisma.subscription.upsert({
         where: { userId: userId },
         update: {
           stripeSubscriptionId,
           stripeCustomerId,
           plan,
           status: "ACTIVE",
-          currentPeriodEnd: new Date(
-            (subscription as any).current_period_end * 1000,
-          ),
+          currentPeriodEnd: periodEnd,
         },
         create: {
-          userId: userId!,
+          userId: userId,
           stripeSubscriptionId,
           stripeCustomerId,
           plan,
           status: "ACTIVE",
-          currentPeriodEnd: new Date(
-            (subscription as any).current_period_end * 1000,
-          ),
+          currentPeriodEnd: periodEnd,
         },
       });
-      break;
-    }
-    case "customer.subscription.created": {
-      const subscription = event.data.object as any;
-      const userId = subscription.metadata?.userId;
-      const plan = subscription.metadata?.plan as "MONTHLY" | "YEARLY";
+      console.log(
+        "successfully pass from prisma.subscription.upsert and result is ",
+        res,
+      );
 
-      if (userId && plan) {
-        await prisma.subscription.upsert({
-          where: { userId },
-          update: {
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer,
-            plan,
-            status: "ACTIVE",
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-          create: {
-            userId,
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer,
-            plan,
-            status: "ACTIVE",
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      try {
+        console.log("Starting User table update for ID:", userId);
+
+        const updatedUser = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: plan as any,
+
+            currentPeriodEnd: periodEnd,
           },
         });
+      } catch (error: any) {
+        console.error("Error during User table update:", error.message);
       }
+
+      console.log(
+        "successfully update user plan and period end for User: " + userId,
+      );
+
       break;
     }
+
     case "invoice.payment_succeeded": {
       const invoice = event.data.object as any;
       const subscriptionId = invoice.subscription as string;
 
       if (subscriptionId) {
-        const subscription =
-          await stripe.subscriptions.retrieve(subscriptionId);
-        await prisma.subscription.updateMany({
+        const subscription = (await stripe.subscriptions.retrieve(
+          subscriptionId,
+        )) as any;
+        const periodEnd = new Date(subscription.current_period_end * 1000);
+
+        const subRecord = await prisma.subscription.findUnique({
           where: { stripeSubscriptionId: subscriptionId },
-          data: {
-            status: "ACTIVE",
-            currentPeriodEnd: new Date(
-              (subscription as any).current_period_end * 1000,
-            ),
-          },
         });
+
+        if (subRecord) {
+          await prisma.subscription.update({
+            where: { stripeSubscriptionId: subscriptionId },
+            data: {
+              status: "ACTIVE",
+              currentPeriodEnd: periodEnd,
+            },
+          });
+
+          await prisma.user.update({
+            where: { id: subRecord.userId },
+            data: {
+              currentPeriodEnd: periodEnd,
+            },
+          });
+        }
       }
       break;
     }
+
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as any;
+
+      const subRecord = await prisma.subscription.findUnique({
+        where: { stripeSubscriptionId: subscription.id },
+      });
+
+      if (subRecord) {
+        await prisma.user.update({
+          where: { id: subRecord.userId },
+          data: {
+            plan: "FREE",
+            currentPeriodEnd: null,
+          },
+        });
+
+        await prisma.subscription.update({
+          where: { stripeSubscriptionId: subscription.id },
+          data: { status: "CANCELED" },
+        });
+
+        console.log(`Subscription canceled for User: ${subRecord.userId}`);
+      }
+      break;
+    }
+
     default:
       console.log(`Unhandled event type: ${event.type}`);
   }
 };
 
+export const checkSubscriptionStatus = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      plan: true,
+      currentPeriodEnd: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+
+  if (user.plan !== "FREE") {
+    return {
+      success: true,
+      status: "verified",
+      message: "Subscription verified successfully!",
+      data: {
+        plan: user.plan,
+        currentPeriodEnd: user.currentPeriodEnd,
+      },
+    };
+  }
+
+  return {
+    success: false,
+    status: "processing",
+    message: "Payment is being processed, please wait...",
+    data: null,
+  };
+};
+
 export const SubscriptionService = {
   createCheckoutSession,
   handleWebhook,
+  checkSubscriptionStatus,
 };

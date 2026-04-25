@@ -11,4 +11,9 @@ router.post(
   SubscriptionController.createCheckoutSession,
 );
 
+router.get(
+  "/check-status",
+  checkAuth(UserRole.USER, UserRole.ADMIN),
+  SubscriptionController.CheckSubscriptionStatus,
+);
 export const SubscriptionRoutes = router;

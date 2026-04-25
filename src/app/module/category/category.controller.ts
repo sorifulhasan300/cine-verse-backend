@@ -15,7 +15,15 @@ const createCategory = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllCategories = catchAsync(async (req: Request, res: Response) => {
-  const result = await CategoryService.getAllCategories();
+  const { search, page = '1', limit = '10' } = req.query;
+
+  const options = {
+    search: search as string,
+    page: parseInt(page as string, 10),
+    limit: parseInt(limit as string, 10),
+  };
+
+  const result = await CategoryService.getAllCategories(options);
 
   sendResponse(res, {
     statusCode: 200,
@@ -25,7 +33,33 @@ const getAllCategories = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
+  const result = await CategoryService.updateCategory(id, req.body);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Category updated successfully",
+    data: result,
+  });
+});
+
+const deleteCategory = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
+  const result = await CategoryService.deleteCategory(id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Category deleted successfully",
+    data: result,
+  });
+});
+
 export const CategoryController = {
   createCategory,
   getAllCategories,
+  updateCategory,
+  deleteCategory,
 };

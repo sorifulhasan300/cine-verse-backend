@@ -6,3 +6,5 @@ export const categoryValidationSchema = z.object({
     .min(2, "Name must be at least 2 characters long")
     .max(50, "Name cannot exceed 50 characters"),
 });
+
+export const updateCategoryValidationSchema = categoryValidationSchema.partial();

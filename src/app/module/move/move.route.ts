@@ -3,7 +3,7 @@ import { MovieController } from "./move.controller";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
 import validateRequest from "../../../middleware/validateRequest";
-import movieValidationSchema from "./movie.validation";
+import { movieValidationSchema, updateMovieValidationSchema } from "./movie.validation";
 import { checkPremium } from "../../../middleware/checkPremium";
 
 const router = express.Router();
@@ -18,8 +18,21 @@ router.post(
 router.get("/", MovieController.getAllMovies);
 
 router.get(
-  "/:id",
+  "/admin",
   checkAuth(UserRole.ADMIN),
+  MovieController.getAllMoviesForAdmin,
+);
+
+router.put(
+  "/admin/:id",
+  validateRequest(updateMovieValidationSchema),
+  checkAuth(UserRole.ADMIN),
+  MovieController.updateMovie,
+);
+
+router.get(
+  "/:id",
+  checkAuth(UserRole.USER),
   checkPremium,
   MovieController.getSingleMovie,
 );

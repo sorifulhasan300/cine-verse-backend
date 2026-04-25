@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import { SubscriptionService } from "./subscription.service";
 import Stripe from "stripe";
+import { send } from "node:process";
 
 const createCheckoutSession = catchAsync(
   async (req: Request, res: Response) => {
@@ -41,7 +42,24 @@ const stripeWebhook = catchAsync(async (req: Request, res: Response) => {
   res.json({ received: true });
 });
 
+const CheckSubscriptionStatus = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+    const response = await SubscriptionService.checkSubscriptionStatus(
+      userId as string,
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Subscription status checked successfully",
+      data: { status: response },
+    });
+  },
+);
+
 export const SubscriptionController = {
   createCheckoutSession,
   stripeWebhook,
+  CheckSubscriptionStatus,
 };

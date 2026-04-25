@@ -15,6 +15,16 @@ const createMovie = catchAsync(async (req, res) => {
   });
 });
 
+const updateMovie = catchAsync(async (req, res) => {
+  const result = await MovieService.updateMovie(req.params.id as string, req.body);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Movie updated successfully",
+    data: result,
+  });
+});
+
 const getAllMovies = catchAsync(async (req, res) => {
   const filters = req.query;
   const result = await MovieService.getAllMovies(filters);
@@ -22,6 +32,17 @@ const getAllMovies = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Movies fetched successfully",
+    data: result,
+  });
+});
+
+const getAllMoviesForAdmin = catchAsync(async (req, res) => {
+  const filters = req.query;
+  const result = await MovieService.getAllMoviesForAdmin(filters);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Movies fetched successfully for admin",
     data: result,
   });
 });
@@ -66,6 +87,8 @@ const getSingleMovie = catchAsync(async (req, res) => {
 
 export const MovieController = {
   createMovie,
+  updateMovie,
   getAllMovies,
+  getAllMoviesForAdmin,
   getSingleMovie,
 };
