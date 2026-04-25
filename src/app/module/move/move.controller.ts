@@ -47,6 +47,16 @@ const getAllMoviesForAdmin = catchAsync(async (req, res) => {
   });
 });
 
+const getMostPopularMovies = catchAsync(async (req, res) => {
+  const result = await MovieService.getMostPopularMovies();
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Most popular movies fetched successfully",
+    data: result,
+  });
+});
+
 const getSingleMovie = catchAsync(async (req, res) => {
   const userId = req.user?.id;
 
@@ -90,5 +100,6 @@ export const MovieController = {
   updateMovie,
   getAllMovies,
   getAllMoviesForAdmin,
+  getMostPopularMovies,
   getSingleMovie,
 };

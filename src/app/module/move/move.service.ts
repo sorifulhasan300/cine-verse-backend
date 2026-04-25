@@ -79,6 +79,28 @@ const updateMovie = async (id: string, payload: any) => {
   return result;
 };
 
+const getMostPopularMovies = async () => {
+  const result = await prisma.movie.findMany({
+    include: {
+      categories: true,
+      _count: {
+        select: {
+          likes: true,
+          reviews: true,
+        },
+      },
+    },
+    orderBy: {
+      likes: {
+        _count: 'desc',
+      },
+    },
+    take: 4,
+  });
+
+  return result;
+};
+
 const getSingleMovie = async (id: string, userId?: string) => {
   return await prisma.movie.findUnique({
     where: {
@@ -119,5 +141,6 @@ export const MovieService = {
   updateMovie,
   getAllMovies,
   getAllMoviesForAdmin,
+  getMostPopularMovies,
   getSingleMovie,
 };

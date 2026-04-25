@@ -17,6 +17,8 @@ router.post(
 
 router.get("/", MovieController.getAllMovies);
 
+router.get("/most-popular", MovieController.getMostPopularMovies);
+
 router.get(
   "/admin",
   checkAuth(UserRole.ADMIN),
