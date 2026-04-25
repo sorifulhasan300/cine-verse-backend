@@ -38,6 +38,7 @@ class QueryBuilder<T> {
       "page",
       "fields",
       "sortOrder",
+      "include",
     ];
     excludeFields.forEach((el) => delete queryObj[el]);
 

@@ -1,9 +1,18 @@
+import { includes } from "zod";
 import QueryBuilder from "../../../builder/QueryBuilder";
 import { Movie, Pricing } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+import { ca } from "zod/locales";
 
 const createMovie = async (payload: any) => {
   const { categoryIds, ...movieData } = payload;
+
+  // Ensure releaseYear is full ISO DateTime
+  if (movieData.releaseYear) {
+    if (movieData.releaseYear.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)) {
+      movieData.releaseYear += ":00Z";
+    }
+  }
 
   const result = await prisma.movie.create({
     data: {
@@ -22,11 +31,14 @@ const createMovie = async (payload: any) => {
 const getAllMovies = async (query: Record<string, any>) => {
   // Default to sorting by releaseYear descending for latest movies first
   if (!query.sort) {
-    query.sort = 'releaseYear';
+    query.sort = "releaseYear";
   }
   if (!query.sortOrder) {
-    query.sortOrder = 'desc';
+    query.sortOrder = "desc";
   }
+
+  // Include categories in the result
+  query.include = { categories: true };
 
   const movieQuery = new QueryBuilder(prisma.movie, query)
     .search(["title", "director", "cast"])
@@ -41,11 +53,14 @@ const getAllMovies = async (query: Record<string, any>) => {
 const getAllMoviesForAdmin = async (query: Record<string, any>) => {
   // Default to sorting by releaseYear descending for latest movies first
   if (!query.sort) {
-    query.sort = 'releaseYear';
+    query.sort = "releaseYear";
   }
   if (!query.sortOrder) {
-    query.sortOrder = 'desc';
+    query.sortOrder = "desc";
   }
+
+  // Include categories in the result
+  query.include = { categories: true };
 
   const movieQuery = new QueryBuilder(prisma.movie, query)
     .search(["title", "director", "cast"])
@@ -60,6 +75,15 @@ const getAllMoviesForAdmin = async (query: Record<string, any>) => {
 const updateMovie = async (id: string, payload: any) => {
   const { categoryIds, ...movieData } = payload;
   console.log(payload);
+
+  // Ensure releaseYear is full ISO DateTime
+  if (
+    movieData.releaseYear &&
+    movieData.releaseYear.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
+  ) {
+    movieData.releaseYear += ":00Z";
+  }
+
   const updateData: any = { ...movieData };
 
   if (categoryIds) {
@@ -92,7 +116,7 @@ const getMostPopularMovies = async () => {
     },
     orderBy: {
       likes: {
-        _count: 'desc',
+        _count: "desc",
       },
     },
     take: 4,

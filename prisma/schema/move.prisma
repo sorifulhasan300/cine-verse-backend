@@ -12,9 +12,12 @@ model Movie {
   cast         String
   videoUrl     String
   thumbnailUrl String
+  duration     Int  @default(0) 
+
   pricing      Pricing     @default(FREE)
 
   categories   Category[]  @relation("MovieToCategory")
+  
 
   reviews      Review[]
   likes        Like[]
