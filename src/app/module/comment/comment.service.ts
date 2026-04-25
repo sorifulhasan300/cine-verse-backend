@@ -8,6 +8,25 @@ const createComment = async (
   payload: { text: string; reviewId: string; parentId?: string },
 ) => {
   // return console.log("parent id", payload);
+
+  // Check if the review exists and get its userId
+  const review = await prisma.review.findUnique({
+    where: { id: payload.reviewId },
+    select: { userId: true },
+  });
+
+  if (!review) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Review not found!");
+  }
+
+  // Prevent user from commenting on their own review
+  if (review.userId === userId) {
+    throw new AppError(
+      StatusCodes.FORBIDDEN,
+      "You cannot comment on your own review."
+    );
+  }
+
   const result = await prisma.comment.create({
     data: {
       text: payload.text,

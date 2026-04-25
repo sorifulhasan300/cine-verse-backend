@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post(
   "/create-checkout-session",
-  checkAuth(UserRole.USER),
+  checkAuth(UserRole.USER, UserRole.ADMIN),
   SubscriptionController.createCheckoutSession,
 );
 

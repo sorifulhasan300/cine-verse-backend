@@ -42,6 +42,12 @@ class QueryBuilder<T> {
     ];
     excludeFields.forEach((el) => delete queryObj[el]);
 
+    // Handle category filtering for Movie model
+    if (queryObj.category) {
+      queryObj.categories = { some: { name: queryObj.category } };
+      delete queryObj.category;
+    }
+
     if (Object.keys(queryObj).length > 0) {
       this.prismaQuery.where = {
         ...this.prismaQuery.where,
@@ -75,12 +81,24 @@ class QueryBuilder<T> {
   }
 
   async execute() {
+    // Filter include to only allowed fields to prevent validation errors
+    let filteredInclude = this.query.include;
+    if (filteredInclude && typeof filteredInclude === 'object' && !Array.isArray(filteredInclude)) {
+      const allowedIncludes = ['categories', 'reviews', 'likes', 'watchLists', '_count'];
+      filteredInclude = {};
+      for (const key of Object.keys(this.query.include)) {
+        if (allowedIncludes.includes(key)) {
+          filteredInclude[key] = this.query.include[key];
+        }
+      }
+    }
+
     const data = await this.model.findMany({
-      where: this.prismaQuery.where, 
+      where: this.prismaQuery.where,
       orderBy: this.prismaQuery.orderBy,
       skip: this.prismaQuery.skip,
       take: this.prismaQuery.take,
-      include: this.query.include,
+      include: filteredInclude,
     });
 
     const total = await this.model.count({

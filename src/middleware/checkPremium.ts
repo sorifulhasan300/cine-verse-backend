@@ -1,22 +1,42 @@
+import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../app/lib/auth";
 import { prisma } from "../app/lib/prisma";
-import { fromNodeHeaders } from "better-auth/node";
 import catchAsync from "../app/utils/catchAsync";
 
 export const checkPremium = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  const movie = await prisma.movie.findUnique({
+    where: { id: id as string },
+    select: { pricing: true },
+  });
+
+  if (!movie) {
+    return res.status(404).json({ message: "Movie not found" });
+  }
+
+  if (movie.pricing === "FREE") {
+    console.log("in the plan condition");
+    return next();
+  }
+  console.log("pass plan condition");
+
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers),
   });
 
   if (!session) {
-    return res.status(401).json({ message: "Please login first" });
+    return res
+      .status(401)
+      .json({ message: "Please login first to watch premium content" });
   }
 
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: session.user.id },
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id as string },
+    select: { plan: true },
   });
 
-  if (!subscription || subscription.plan === "FREE") {
+  if (!user || user.plan === "FREE") {
     return res.status(403).json({
       message: "Access Denied. Please subscribe to watch this movie.",
       redirectTo: "/pricing",

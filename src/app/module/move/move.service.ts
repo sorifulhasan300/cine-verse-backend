@@ -1,4 +1,3 @@
-import { includes } from "zod";
 import QueryBuilder from "../../../builder/QueryBuilder";
 import { Movie, Pricing } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
@@ -38,7 +37,11 @@ const getAllMovies = async (query: Record<string, any>) => {
   }
 
   // Include categories in the result
-  query.include = { categories: true };
+  query.include = {
+    categories: true,
+    _count: { select: { likes: true, reviews: true } },
+    rating: true,
+  };
 
   const movieQuery = new QueryBuilder(prisma.movie, query)
     .search(["title", "director", "cast"])
