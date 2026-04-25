@@ -25,9 +25,14 @@ const forgotPassword = async (email: string) => {
   return { message: "OTP sent to your email for password reset" };
 };
 
-const resetPassword = async (email: string, otp: string, password: string) => {
+const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string,
+) => {
+  console.log(email, otp, newPassword);
   await auth.api.resetPasswordEmailOTP({
-    body: { email, otp, password },
+    body: { email, otp, password: newPassword },
   });
   return { message: "Password reset successfully" };
 };

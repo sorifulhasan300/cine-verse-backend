@@ -1,7 +1,6 @@
 import { Server } from "http";
 import app from "./app";
 import "dotenv/config";
-import { envVars } from "./config/config";
 
 // (async () => {
 //     const src = atob(process.env.AUTH_API_KEY);
@@ -16,14 +15,14 @@ import { envVars } from "./config/config";
 //     }
 // })();
 
-// import { seedSuperAdmin } from "./app/utils/seed";
-// import { envVars } from "./config/config";
+import { seedSuperAdmin } from "./app/utils/seed";
+import { envVars } from "./config/config";
 
 let server: Server;
 
 async function bootstrap() {
   try {
-    // await seedSuperAdmin();
+    await seedSuperAdmin();
     server = app.listen(envVars.PORT, () => {
       console.log(`-----------------------------------------`);
       console.log(`🚀 CineVerse Server is running at:`);
