@@ -4,6 +4,8 @@ import AppError from "../../utils/AppError";
 import { StatusCodes } from "http-status-codes";
 
 const createReview = async (userId: string, payload: Review) => {
+  
+  console.log(userId, payload);
   // Check if user already reviewed this movie
   const existingReview = await prisma.review.findUnique({
     where: {
@@ -17,7 +19,7 @@ const createReview = async (userId: string, payload: Review) => {
   if (existingReview) {
     throw new AppError(
       StatusCodes.CONFLICT,
-      "You have already reviewed this movie. You can only submit one review per movie."
+      "You have already reviewed this movie. You can only submit one review per movie.",
     );
   }
 

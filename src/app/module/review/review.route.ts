@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   "/",
-  checkAuth(UserRole.USER),
+  checkAuth(UserRole.USER, UserRole.ADMIN),
   validationMiddleware(reviewValidationSchema),
   ReviewController.createReview,
 );
