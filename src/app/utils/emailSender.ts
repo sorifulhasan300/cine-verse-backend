@@ -20,7 +20,6 @@ export const sendEmail = async (to: string, html: string, subject: string) => {
       html,
     });
 
-    console.log("Message sent: %s", info.messageId);
     return info;
   } catch (error) {
     console.error("Error sending email:", error);

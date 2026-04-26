@@ -30,7 +30,6 @@ const resetPassword = async (
   otp: string,
   newPassword: string,
 ) => {
-  console.log(email, otp, newPassword);
   await auth.api.resetPasswordEmailOTP({
     body: { email, otp, password: newPassword },
   });

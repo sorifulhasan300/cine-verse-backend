@@ -7,7 +7,6 @@ const createComment = async (
   userId: string,
   payload: { text: string; reviewId: string; parentId?: string },
 ) => {
-  // return console.log("parent id", payload);
 
   // Check if the review exists and get its userId
   const review = await prisma.review.findUnique({

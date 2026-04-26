@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { SubscriptionController } from "./subscription.controller";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
@@ -16,4 +16,4 @@ router.get(
   checkAuth(UserRole.USER, UserRole.ADMIN),
   SubscriptionController.CheckSubscriptionStatus,
 );
-export const SubscriptionRoutes = router;
+export const SubscriptionRoutes: Router = router;

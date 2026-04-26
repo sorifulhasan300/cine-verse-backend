@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { ManageUserController } from "./manage-user.controller";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
@@ -14,4 +14,4 @@ router.put("/users/:id/unblock", ManageUserController.unblockUser);
 router.put("/users/:id/inactive", ManageUserController.deactivateUser);
 router.put("/users/:id/active", ManageUserController.activateUser);
 
-export const ManageUserRoutes = router;
+export const ManageUserRoutes: Router = router;

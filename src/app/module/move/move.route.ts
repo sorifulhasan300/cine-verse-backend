@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { MovieController } from "./move.controller";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
@@ -42,4 +42,4 @@ router.get(
   MovieController.getSingleMovie,
 );
 
-export const MovieRoutes = router;
+export const MovieRoutes: Router = router;

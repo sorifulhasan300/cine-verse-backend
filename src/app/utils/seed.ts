@@ -10,7 +10,6 @@ export const seedSuperAdmin = async () => {
     });
 
     if (existingAdmin) {
-      console.log("Super admin already exists");
       return;
     }
 
@@ -40,9 +39,6 @@ export const seedSuperAdmin = async () => {
       },
     });
 
-    console.log("Super admin created successfully");
-    console.log("Email: admin@cineverse.com");
-    console.log("Password: admin123");
   } catch (error) {
     console.error("Error seeding super admin:", error);
   }

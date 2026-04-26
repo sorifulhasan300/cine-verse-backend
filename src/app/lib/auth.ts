@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { emailOTP } from "better-auth/plugins";
+import { emailOTP, oAuthProxy } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { sendEmail } from "../utils/emailSender";
 import { UserRole } from "../../types/role.types";
@@ -14,7 +14,11 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
 
+  baseURL: process.env.FRONTEND_URL,
+  trustedOrigins: [process.env.FRONTEND_URL!, process.env.BACKEND_URL!],
+
   plugins: [
+    oAuthProxy(),
     emailOTP({
       overrideDefaultEmailVerification: true,
       sendVerificationOTP: async ({ email, otp, type }) => {
@@ -42,12 +46,7 @@ export const auth = betterAuth({
       },
     }),
   ],
-  trustedOrigins: [
-    "http://localhost:5000",
-    "http://localhost:3000",
-    "http://localhost:3002",
-    "http://localhost:3001",
-  ],
+
   user: {
     additionalFields: {
       role: {
@@ -73,6 +72,28 @@ export const auth = betterAuth({
         type: "string",
         defaultValue: "ACTIVE",
         required: false,
+      },
+    },
+  },
+  advanced: {
+    cookies: {
+      session_token: {
+        name: "session_token", // Force this exact name
+        attributes: {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          partitioned: true,
+        },
+      },
+      state: {
+        name: "session_token", // Force this exact name
+        attributes: {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          partitioned: true,
+        },
       },
     },
   },

@@ -65,7 +65,6 @@ const handleWebhook = async (event: any) => {
       const session = event.data.object as any;
       const userId = session.metadata?.userId;
       const plan = session.metadata?.plan as "MONTHLY" | "YEARLY";
-      console.log("meta data and userid and plan", userId, plan);
       const stripeSubscriptionId = session.subscription || session.id;
       const stripeCustomerId = session.customer as string;
 
@@ -73,12 +72,10 @@ const handleWebhook = async (event: any) => {
         console.error("Missing userId or plan in metadata");
         return;
       }
-      console.log("successfully pass from userId and plan");
       const subscription = (await stripe.subscriptions.retrieve(
         stripeSubscriptionId,
       )) as any;
       const periodEnd = new Date(subscription.current_period_end * 1000);
-      console.log("successfully pass from subscription");
 
       const res = await prisma.subscription.upsert({
         where: { userId: userId },
@@ -98,13 +95,9 @@ const handleWebhook = async (event: any) => {
           currentPeriodEnd: periodEnd,
         },
       });
-      console.log(
-        "successfully pass from prisma.subscription.upsert and result is ",
-        res,
-      );
+   
 
       try {
-        console.log("Starting User table update for ID:", userId);
 
         const updatedUser = await prisma.user.update({
           where: { id: userId },
@@ -118,9 +111,7 @@ const handleWebhook = async (event: any) => {
         console.error("Error during User table update:", error.message);
       }
 
-      console.log(
-        "successfully update user plan and period end for User: " + userId,
-      );
+   
 
       break;
     }
@@ -180,13 +171,11 @@ const handleWebhook = async (event: any) => {
           data: { status: "CANCELED" },
         });
 
-        console.log(`Subscription canceled for User: ${subRecord.userId}`);
       }
       break;
     }
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
   }
 };
 

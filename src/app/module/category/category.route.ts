@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { CategoryController } from "./category.controller";
 import validationMiddleware from "../../../middleware/validateRequest";
 import {
@@ -29,4 +29,4 @@ router.delete(
   CategoryController.deleteCategory,
 );
 
-export const CategoryRoutes = router;
+export const CategoryRoutes: Router = router;

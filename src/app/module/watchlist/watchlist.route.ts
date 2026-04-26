@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { WatchlistController } from "./watchlist.controller";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
@@ -23,4 +23,4 @@ router.post(
   WatchlistController.removeWatchlist,
 );
 
-export const WatchlistRoutes = router;
+export const WatchlistRoutes: Router = router;

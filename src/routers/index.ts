@@ -24,4 +24,4 @@ router.use("/auth", AuthRoutes);
 router.use("/statics", StaticsRoutes);
 router.use("/manage-users", ManageUserRoutes);
 
-export const routers = router;
+export const routers: Router = router;

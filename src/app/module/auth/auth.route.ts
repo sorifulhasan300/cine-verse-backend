@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { AuthController } from "./auth.controller";
 import validateRequest from "../../../middleware/validateRequest";
 import { auth } from "../../lib/auth";
@@ -37,4 +37,5 @@ router.get(
   AuthController.getProfile,
 );
 
-export const AuthRoutes = router;
+// export const AuthRoutes = router;
+export const AuthRoutes: Router = router;

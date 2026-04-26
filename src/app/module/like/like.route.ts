@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { likeValidationSchema } from "./like.validation";
 import { checkAuth } from "../../../middleware/auth.middleware";
 import { UserRole } from "../../../types/role.types";
@@ -14,4 +14,4 @@ router.post(
   LikeController.toggleLike,
 );
 
-export const LikeRoutes = router;
+export const LikeRoutes: Router = router;

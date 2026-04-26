@@ -5,7 +5,6 @@ import catchAsync from "../app/utils/catchAsync";
 
 export const checkPremium = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
   const movie = await prisma.movie.findUnique({
     where: { id: id as string },
     select: { pricing: true },
@@ -16,10 +15,8 @@ export const checkPremium = catchAsync(async (req, res, next) => {
   }
 
   if (movie.pricing === "FREE") {
-    console.log("in the plan condition");
     return next();
   }
-  console.log("pass plan condition");
 
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers),

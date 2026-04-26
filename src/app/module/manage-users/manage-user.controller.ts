@@ -6,11 +6,16 @@ import { manageUsersService } from "./manage-users.service";
 
 const getUsers = catchAsync(async (req: Request, res: Response) => {
   const { search, page, limit } = req.query;
-  const result = await manageUsersService.getUsers({
+  const pageNumber =
+    page !== undefined ? parseInt(page as string, 10) : undefined;
+  const limitNumber =
+    limit !== undefined ? parseInt(limit as string, 10) : undefined;
+  const queryParams = {
     search: search as string,
-    page: page ? parseInt(page as string) : undefined,
-    limit: limit ? parseInt(limit as string) : undefined,
-  });
+    ...(pageNumber !== undefined ? { page: pageNumber } : {}),
+    ...(limitNumber !== undefined ? { limit: limitNumber } : {}),
+  };
+  const result = await manageUsersService.getUsers(queryParams);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

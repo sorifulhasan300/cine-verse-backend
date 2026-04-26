@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { reviewValidationSchema } from "./review.validation";
 import { ReviewController } from "./review.controller";
 import validationMiddleware from "../../../middleware/validateRequest";
@@ -16,4 +16,4 @@ router.post(
 
 router.get("/:movieId", ReviewController.getMovieReviews);
 
-export const ReviewRoutes = router;
+export const ReviewRoutes: Router = router;

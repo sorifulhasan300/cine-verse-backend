@@ -12,7 +12,15 @@ import { SubscriptionController } from "./app/module/subscription/subscription.c
 const app: Application = express();
 
 //parser and common middlewares
-app.use(cors({ origin: true, credentials: true }));
+// app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    // methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    // allowedHeaders: [["Content-Type", "Authorization", "Cookie"],
+  }),
+);
 app.use(cookieParser());
 
 // webhook not working properly need to fix and generate

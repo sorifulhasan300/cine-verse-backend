@@ -16,4 +16,4 @@ router.get(
   StaticsController.userStatics,
 );
 
-export const StaticsRoutes = router;
+export const StaticsRoutes: Router = router;

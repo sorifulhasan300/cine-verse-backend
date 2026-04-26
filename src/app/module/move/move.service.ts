@@ -77,7 +77,6 @@ const getAllMoviesForAdmin = async (query: Record<string, any>) => {
 
 const updateMovie = async (id: string, payload: any) => {
   const { categoryIds, ...movieData } = payload;
-  console.log(payload);
 
   // Ensure releaseYear is full ISO DateTime
   if (

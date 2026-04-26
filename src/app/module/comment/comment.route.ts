@@ -22,4 +22,4 @@ router.delete(
   CommentController.deleteComment,
 );
 
-export const CommentRoutes = router;
+export const CommentRoutes: Router = router;
