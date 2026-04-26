@@ -20,6 +20,7 @@ const loadEnvVariables = (): EnvConfig => {
     "CLIENT_URL",
     "EMAIL_USER",
     "EMAIL_PASS",
+    "BACKEND_URL",
   ];
 
   requiredEnvVars.forEach((varName) => {
@@ -45,6 +46,7 @@ const loadEnvVariables = (): EnvConfig => {
     CLIENT_URL: process.env.CLIENT_URL as string,
     EMAIL_USER: process.env.EMAIL_USER as string,
     EMAIL_PASS: process.env.EMAIL_PASS as string,
+    BACKEND_URL: process.env.BACKEND_URL as string,
   };
 };
 

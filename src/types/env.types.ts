@@ -12,4 +12,5 @@ export interface EnvConfig {
   CLIENT_URL: string;
   EMAIL_USER: string;
   EMAIL_PASS: string;
+  BACKEND_URL: string;
 }

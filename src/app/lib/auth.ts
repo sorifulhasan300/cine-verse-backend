@@ -83,7 +83,6 @@ export const auth = betterAuth({
           httpOnly: true,
           secure: true,
           sameSite: "none",
-          partitioned: true,
         },
       },
       state: {
@@ -92,7 +91,6 @@ export const auth = betterAuth({
           httpOnly: true,
           secure: true,
           sameSite: "none",
-          partitioned: true,
         },
       },
     },
