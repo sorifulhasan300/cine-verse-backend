@@ -14,9 +14,9 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
 
-  baseURL: envVars.BACKEND_URL,
+  baseURL: "https://cine-verse-backend-pro.vercel.app",
   trustedOrigins: [
-    envVars.CLIENT_URL! || "https://cine-verse-frontend-gamma.vercel.app",
+    envVars.CLIENT_URL || "https://cine-verse-frontend-gamma.vercel.app",
     "http://localhost:3000",
     "https://cine-verse-backend-pro.vercel.app",
   ],
@@ -50,6 +50,12 @@ export const auth = betterAuth({
       },
     }),
   ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+    },
+  },
 
   user: {
     additionalFields: {
@@ -86,7 +92,7 @@ export const auth = betterAuth({
         attributes: {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: "lax",
         },
       },
       state: {
@@ -94,7 +100,7 @@ export const auth = betterAuth({
         attributes: {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: "lax",
         },
       },
     },
