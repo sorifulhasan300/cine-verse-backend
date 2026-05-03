@@ -8,6 +8,7 @@ import notFound from "./middleware/notFound";
 import globalErrorHandler from "./errors/globalErrorHandler";
 import { StatusCodes } from "http-status-codes";
 import { SubscriptionController } from "./app/module/subscription/subscription.controller";
+import { envVars } from "./config/config";
 
 const app: Application = express();
 
@@ -15,12 +16,13 @@ const app: Application = express();
 // app.use(cors({ origin: true, credentials: true }));
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: true,
     credentials: true,
-    // methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    // allowedHeaders: [["Content-Type", "Authorization", "Cookie"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   }),
 );
+app.options("*", cors());
 app.use(cookieParser());
 
 // webhook not working properly need to fix and generate

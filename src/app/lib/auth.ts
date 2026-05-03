@@ -3,7 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { emailOTP, oAuthProxy } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { sendEmail } from "../utils/emailSender";
-import { UserRole } from "../../types/role.types";
+import { envVars } from "../../config/config";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -14,8 +14,10 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
 
-  baseURL: process.env.FRONTEND_URL,
-  trustedOrigins: [process.env.FRONTEND_URL!, process.env.BACKEND_URL!],
+  baseURL: envVars.BACKEND_URL,
+  trustedOrigins: [
+    envVars.CLIENT_URL! || "https://cine-verse-frontend-gamma.vercel.app",
+  ],
 
   plugins: [
     oAuthProxy(),
@@ -78,7 +80,7 @@ export const auth = betterAuth({
   advanced: {
     cookies: {
       session_token: {
-        name: "session_token", // Force this exact name
+        name: "better-auth.session_token",
         attributes: {
           httpOnly: true,
           secure: true,
@@ -86,7 +88,7 @@ export const auth = betterAuth({
         },
       },
       state: {
-        name: "session_token", // Force this exact name
+        name: "better-auth.state",
         attributes: {
           httpOnly: true,
           secure: true,
@@ -95,4 +97,24 @@ export const auth = betterAuth({
       },
     },
   },
+  // advanced: {
+  //   cookies: {
+  //     session_token: {
+  //       name: "session_token", // Force this exact name
+  //       attributes: {
+  //         httpOnly: true,
+  //         secure: true,
+  //         sameSite: "none",
+  //       },
+  //     },
+  //     state: {
+  //       name: "session_token", // Force this exact name
+  //       attributes: {
+  //         httpOnly: true,
+  //         secure: true,
+  //         sameSite: "none",
+  //       },
+  //     },
+  //   },
+  // },
 });
