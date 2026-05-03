@@ -21,6 +21,8 @@ const loadEnvVariables = (): EnvConfig => {
     "EMAIL_USER",
     "EMAIL_PASS",
     "BACKEND_URL",
+    "OPENAI_API_KEY",
+    "GOOGLE_GENERATIVE_AI_API_KEY",
   ];
 
   requiredEnvVars.forEach((varName) => {
@@ -47,6 +49,8 @@ const loadEnvVariables = (): EnvConfig => {
     EMAIL_USER: process.env.EMAIL_USER as string,
     EMAIL_PASS: process.env.EMAIL_PASS as string,
     BACKEND_URL: process.env.BACKEND_URL as string,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY as string,
+    GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY as string,
   };
 };
 

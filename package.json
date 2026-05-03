@@ -1,7 +1,10 @@
 {
   "dependencies": {
+    "@ai-sdk/google": "^3.0.67",
+    "@ai-sdk/react": "^3.0.176",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
+    "ai": "^6.0.174",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.6.1",
     "cookie-parser": "^1.4.7",

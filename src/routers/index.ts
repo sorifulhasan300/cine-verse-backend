@@ -9,6 +9,7 @@ import { SubscriptionRoutes } from "../app/module/subscription/subscription.rout
 import { AuthRoutes } from "../app/module/auth/auth.route";
 import { StaticsRoutes } from "../app/module/statics/statics.route";
 import { ManageUserRoutes } from "../app/module/manage-users/manage-user.route";
+import { ChatRoutes } from "../app/module/chat/chat.route";
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.use("/subscriptions", SubscriptionRoutes);
 router.use("/auth", AuthRoutes);
 router.use("/statics", StaticsRoutes);
 router.use("/manage-users", ManageUserRoutes);
+router.use("/chat", ChatRoutes);
 
 export const routers: Router = router;

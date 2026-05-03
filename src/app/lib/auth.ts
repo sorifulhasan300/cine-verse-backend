@@ -16,7 +16,7 @@ export const auth = betterAuth({
 
   baseURL: envVars.BACKEND_URL,
   trustedOrigins: [
-    envVars.CLIENT_URL! || "https://cine-verse-frontend-gamma.vercel.app",
+    envVars.CLIENT_URL! || "https://cine-verse-frontend-gamma.vercel.app","http://localhost:3000",
   ],
 
   plugins: [

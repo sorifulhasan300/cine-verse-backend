@@ -13,4 +13,6 @@ export interface EnvConfig {
   EMAIL_USER: string;
   EMAIL_PASS: string;
   BACKEND_URL: string;
+  OPENAI_API_KEY: string;
+  GOOGLE_GENERATIVE_AI_API_KEY: string;
 }
