@@ -44,17 +44,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.all(
-  "/api/auth/*splat",
-  (req, res, next) => {
-    console.log("=== AUTH DEBUG ===");
-    console.log("Cookie header:", req.headers.cookie);
-    console.log("Origin header:", req.headers.origin);
-    console.log("=================");
-    next();
-  },
-  toNodeHandler(auth),
-);
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/v1", routers);
 
 app.use(notFound);
