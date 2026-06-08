@@ -15,8 +15,9 @@ const app: Application = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
       "https://cine-verse-frontend-gamma.vercel.app",
+      "https://merry-sunflower-fe240d.netlify.app",
+      "http://localhost:3000",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

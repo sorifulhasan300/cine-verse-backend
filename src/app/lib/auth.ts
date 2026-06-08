@@ -15,11 +15,14 @@ export const auth = betterAuth({
   },
 
   baseURL: "https://cine-verse-backend-pro.vercel.app",
-  trustedOrigins: [
-    envVars.CLIENT_URL || "https://cine-verse-frontend-gamma.vercel.app",
-    "http://localhost:3000",
-    "https://cine-verse-backend-pro.vercel.app",
-  ],
+  // trustedOrigins: [
+  //   // envVars.CLIENT_URL || "https://cine-verse-frontend-gamma.vercel.app",
+  //   // "https://merry-sunflower-fe240d.netlify.app",
+  //   // "http://localhost:3000",
+  //   // "https://cine-verse-backend-pro.vercel.app",
+
+  // ],
+  trustedOrigins: ["*"],
 
   plugins: [
     oAuthProxy(),
