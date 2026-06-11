@@ -8,7 +8,10 @@ import notFound from "./middleware/notFound";
 import globalErrorHandler from "./errors/globalErrorHandler";
 import { StatusCodes } from "http-status-codes";
 import { SubscriptionController } from "./app/module/subscription/subscription.controller";
+import { envVars } from "./config/config";
 const app: Application = express();
+
+app.set("trust proxy", 1);
 
 //parser and common middlewares
 // app.use(cors({ origin: true, credentials: true }));
@@ -18,7 +21,8 @@ app.use(
       "https://cine-verse-frontend-gamma.vercel.app",
       "https://merry-sunflower-fe240d.netlify.app",
       "http://localhost:3000",
-    ],
+      envVars.CLIENT_URL,
+    ].filter(Boolean),
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],

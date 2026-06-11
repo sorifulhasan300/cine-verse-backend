@@ -5,6 +5,8 @@ import { prisma } from "./prisma";
 import { sendEmail } from "../utils/emailSender";
 import { envVars } from "../../config/config";
 
+const isProduction = envVars.NODE_ENV === "production";
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -14,7 +16,7 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
 
-  baseURL: "https://cine-verse-backend-pro.vercel.app",
+  baseURL: envVars.BETTER_AUTH_URL,
   // trustedOrigins: [
   //   // envVars.CLIENT_URL || "https://cine-verse-frontend-gamma.vercel.app",
   //   // "https://merry-sunflower-fe240d.netlify.app",
@@ -94,16 +96,16 @@ export const auth = betterAuth({
         name: "better-auth.session_token",
         attributes: {
           httpOnly: true,
-          secure: true,
-          sameSite: "lax",
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
         },
       },
       state: {
         name: "better-auth.state",
         attributes: {
           httpOnly: true,
-          secure: true,
-          sameSite: "lax",
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
         },
       },
     },

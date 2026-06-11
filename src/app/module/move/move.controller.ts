@@ -42,7 +42,8 @@ const getAllMovies = catchAsync(async (req, res) => {
 
 const getAllMoviesForAdmin = catchAsync(async (req, res) => {
   const filters = req.query;
-  const result = await MovieService.getAllMoviesForAdmin(filters);
+  const user = req.user;
+  const result = await MovieService.getAllMoviesForAdmin(filters, user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

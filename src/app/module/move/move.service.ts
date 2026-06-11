@@ -53,7 +53,7 @@ const getAllMovies = async (query: Record<string, any>) => {
   return result;
 };
 
-const getAllMoviesForAdmin = async (query: Record<string, any>) => {
+const getAllMoviesForAdmin = async (query: Record<string, any>, user: any) => {
   // Default to sorting by releaseYear descending for latest movies first
   if (!query.sort) {
     query.sort = "releaseYear";
@@ -62,7 +62,6 @@ const getAllMoviesForAdmin = async (query: Record<string, any>) => {
     query.sortOrder = "desc";
   }
 
-  // Include categories in the result
   query.include = { categories: true };
 
   const movieQuery = new QueryBuilder(prisma.movie, query)
