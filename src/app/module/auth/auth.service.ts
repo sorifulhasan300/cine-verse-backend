@@ -2,6 +2,7 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 
 const verifyEmail = async (email: string, otp: string) => {
+  console.log("Verifying email with OTP:", email, otp);
   const result = await auth.api.verifyEmailOTP({
     body: {
       email,
@@ -19,7 +20,7 @@ const verifyEmail = async (email: string, otp: string) => {
 };
 
 const forgotPassword = async (email: string) => {
-  await auth.api.requestPasswordResetEmailOTP({
+  await auth.api.requestPasswordReset({
     body: { email },
   });
   return { message: "OTP sent to your email for password reset" };
@@ -30,8 +31,8 @@ const resetPassword = async (
   otp: string,
   newPassword: string,
 ) => {
-  await auth.api.resetPasswordEmailOTP({
-    body: { email, otp, password: newPassword },
+  await auth.api.resetPassword({
+    body: { newPassword, token: otp },
   });
   return { message: "Password reset successfully" };
 };
