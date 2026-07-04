@@ -29,14 +29,15 @@ export const forgetPasswordRequest = catchAsync(async (req, res) => {
 });
 
 export const resetPassword = catchAsync(async (req, res) => {
-  const { email, otp, password } = req.body;
+  const { email, otp, newPassword } = req.body;
 
-  await authService.resetPassword(email, otp, password);
+  await authService.resetPassword(email, otp, newPassword);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "Password reset successful! You can now login with your new password.",
+    message:
+      "Password reset successful! You can now login with your new password.",
   });
 });
 

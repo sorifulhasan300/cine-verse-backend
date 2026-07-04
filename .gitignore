@@ -1,7 +1,6 @@
 config.bat
 node_modules
 src/generated
-.env
 dist
 
 .vercel

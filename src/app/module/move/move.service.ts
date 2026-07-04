@@ -27,6 +27,16 @@ const createMovie = async (payload: any) => {
   return result;
 };
 
+const deleteMovie = async (id: string) => {
+  const result = await prisma.movie.delete({
+    where: { id },
+    include: {
+      categories: true,
+    },
+  });
+  return result;
+};
+
 const getAllMovies = async (query: Record<string, any>) => {
   // Default to sorting by releaseYear descending for latest movies first
   if (!query.sort) {
@@ -168,4 +178,5 @@ export const MovieService = {
   getAllMoviesForAdmin,
   getMostPopularMovies,
   getSingleMovie,
+  deleteMovie,
 };

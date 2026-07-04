@@ -28,13 +28,17 @@ router.get(
   MovieController.getAllMoviesForAdmin,
 );
 
-router.put(
+router.patch(
   "/admin/:id",
   validateRequest(updateMovieValidationSchema),
   checkAuth(UserRole.ADMIN),
   MovieController.updateMovie,
 );
-
+router.delete(
+  "/admin/:id",
+  checkAuth(UserRole.ADMIN),
+  MovieController.deleteMovie,
+);
 router.get(
   "/:id",
   checkAuth(UserRole.USER, UserRole.ADMIN),

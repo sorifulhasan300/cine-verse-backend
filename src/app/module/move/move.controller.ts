@@ -62,6 +62,16 @@ const getMostPopularMovies = catchAsync(async (req, res) => {
   });
 });
 
+const deleteMovie = catchAsync(async (req, res) => {
+  const result = await MovieService.deleteMovie(req.params.id as string);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Movie deleted successfully",
+    data: result,
+  });
+});
+
 const getSingleMovie = catchAsync(async (req, res) => {
   const userId = req.user?.id;
 
@@ -98,4 +108,5 @@ export const MovieController = {
   getAllMoviesForAdmin,
   getMostPopularMovies,
   getSingleMovie,
+  deleteMovie,
 };
